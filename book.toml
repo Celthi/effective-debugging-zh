@@ -1,0 +1,6 @@
+[book]
+authors = ["celthi"]
+language = "zh"
+multilingual = false
+src = "src"
+title = "Effective Debugging"
