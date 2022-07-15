@@ -30,3 +30,12 @@ http://core-analyzer.sourceforge.net/index_files/Page525.html
 
 https://www.zhihu.com/people/lan-tian-89
 
+## 一些说明
+
+- 有一些因为暂时找不到跟英文对应比较的词语，要么保留英文词，如bug；要么我自己根据自己的理解选了词，如unwind callstack，回卷调用栈。如果有更好的翻译，请不吝赐教。
+
+- 如果有一些内容我不理解，我在翻译的附近标上(??)，提示可能翻译错误。
+
+- 可能会添加一些章节，因为现在新的调试技术的出现。
+
+
