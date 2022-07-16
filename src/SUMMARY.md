@@ -19,6 +19,7 @@
     - [总结](chapter_1/summary.md)
 - [第二章 堆数据结构](./chapter_2.md)
     - [理解内存管理器](./chapter_2/understand_memory_manager.md)
+    - [ptmalloc](./chapter_2/ptmalloc.md)
 - [第三章 内存损坏](./chapter_3.md)
 - [第四章 C/C++对象布局](./chapter_4.md)
 - [第五章 优化后的二进制](./chapter_5.md)
