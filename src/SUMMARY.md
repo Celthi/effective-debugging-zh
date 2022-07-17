@@ -21,6 +21,8 @@
     - [理解内存管理器](./chapter_2/02-01understand_memory_manager.md)
     - [Ptmalloc](./chapter_2/02-02ptmalloc.md)
     - [Tcmalloc](./chapter_2/02-03tcmalloc.md)
+    - [多堆](./chapter_2/02-04multiple_heaps.md)
+    - [利用堆元数据](./chapter_2/02-05leverage_heap_metadata.md)
 - [第三章 内存损坏](./chapter_3.md)
 - [第四章 C/C++对象布局](./chapter_4.md)
     - [对齐](./chapter_4/04-01alignment_and_endian.md)
