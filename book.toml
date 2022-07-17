@@ -7,5 +7,5 @@ title = "Effective Debugging"
 
 [output.html]
 git-repository-url = "https://github.com/Celthi/effective-debugging-zh"
-git-repository-icon = "fa-code-fork"
+git-repository-icon = "fa-github"
 fold.enable=true
