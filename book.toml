@@ -4,3 +4,8 @@ language = "zh"
 multilingual = false
 src = "src"
 title = "Effective Debugging"
+
+[output.html]
+git-repository-url = "https://github.com/Celthi/effective-debugging-zh"
+git-repository-icon = "fa-code-fork"
+fold.enable=true
