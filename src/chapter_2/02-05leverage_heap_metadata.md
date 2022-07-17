@@ -33,12 +33,100 @@ Main Arena [0x501000 - 0x60b000] 1064 KB
 ```
 
 
-我们是怎么从Ptmalloc获取这些信息的？正如我们在前面的章节知道的，每一个内存块前放着一个小的数据结构，叫`malloc_chunk`，块标签。如果用户输入一个有效的地址，由函数`malloc`返回的，内存块的标签正好在这个地址的前面。`size`字段说明当前块的大小。为了知道当前块是使用中还是空闲的，我们需要计算下一个块的地址。当前块的状态编码在下一个块的`size`字段。可以看这里的代码实现https://github.com/yanqi27/core_analyzer/blob/master/src/heap_ptmalloc_2_27.cpp#L580
+我们是怎么从Ptmalloc获取这些信息的？正如我们在前面的章节知道的，每一个内存块前放着一个小的数据结构，叫`malloc_chunk`，块标签。如果用户输入一个有效的地址，由函数`malloc`返回的，内存块的标签正好在这个地址的前面。`size`字段说明当前块的大小。为了知道当前块是使用中还是空闲的，我们需要计算下一个块的地址。当前块的状态编码在下一个块的`size`字段。
+```c
+// Get the next chunk which has the prev_inuse bit flag
+struct malloc_chunk next_chunk;
+if (!ca_read_variable(chunk_addr + chunksz, &next_chunk))
+    break;
 
-The above script commands block and arena use Ptmalloc’s key data structures as we discussed before. I put fairly detailed comments in the listing so that it is easy to understand. I would like to highlight a few points about this implementation:
-•	The commands deal with both 32 bit and 64 bit applications. The memory layout of data structures is calculated through sizeof operator instead of hard coded offsets.
-•	The commands choose main_arena or one of the dynamic arenas to start with. If it turns out the arena doesn’t contain the input address, the command will select the next arena on the linked list to work on until either the memory block is found or all arenas are exhausted.
-•	Since the script walks through the whole arena from head to toe, it doesn’t matter if the address is in the middle of a memory block or otherwise invalid pointer value. The result reveals the memory block from the memory manager’s point of view which may be compared with the application’s view to find any inconsistency.
-•	The arena walk is done through the block tag, or malloc_chunk data structure. All blocks of an arena are linked together (the next block is found by its offset from current block or malloc_chunk’s size field instead of its actual address) from the first chunk to the last one, a.k.a. top chunk. If one of the malloc_chunk is corrupted along the way which is quite often in case of memory corruption, the walk will fail and the error is reported. The engineer could inspect the memory blocks surrounding the bad chunk for further clues to the problem.
-•	Small memory blocks that are less than Ptmalloc’s tuning parameter max_fast (default value is 80 bytes on 64 bit and 72 bytes on 32 bit) are put in special bins, fastbins, when freed. However the malloc_chunk associated with these freed blocks is not changed from in-use to free status. This is designed for rapid reuse of small blocks often seen in C++ applications. The user-defined command takes this into consideration. If a block is small and appears to be in-use, fastbins are also checked. If the block is found in fastbins, it is actually freed; otherwise, it is indeed in-use.
-•	Big memory blocks, which are larger than Ptmalloc’s tuning parameter mmap_threshold (128 kilobytes by default), are allocated directly from kernel through system API mmap. They are usually isolated from other arenas in address space. Therefore there is no way to tell if the given address is in the middle of the block. The command works correctly only if the input address is the beginning address of this type of block.
+if (prev_inuse(&next_chunk) &&
+    !in_cache((mchunkptr)chunk_addr, chunksz))
+{
+    // this is an in-use block
+    blk.size = chunksz - size_t_sz;
+    if (blk.size > smallest->size)
+    {
+        blk.addr = chunk_addr + size_t_sz * 2;
+        blk.inuse = true;
+        add_one_big_block(blks, num, &blk);
+    }
+}
+```
+
+可以看这里的代码实现https://github.com/yanqi27/core_analyzer/blob/master/src/heap_ptmalloc_2_27.cpp#L580
+
+上面的两个命令使用了我们之前讨论的Ptmalloc的关键数据结构。下面强调一些点：
+
+- 这些命令处理32位和64位应用程序。数据结构的内存布局是通过`sizeof`操作符计算的，而不是通过硬编码的偏移。
+
+- 这些命令开始时选择主舞台或者其中一个动态舞台。如若结果表明一个舞台没有包含这个输入地址，命令会选择链接列表的下一个舞台进行工作，知道这个内存块被找到或者所有的舞台被穷尽了。
+
+- 由于命令从头到尾遍历整个舞台，地址是在内存块的中间或者泛指是一个无效的地址，都没有关系。这个结果表明了从内存管理器角度的内存块，从而可以跟应用程序的角度进行对比，发现蛛丝马迹。
+
+- 堆遍历命令是通过块标签，或者`malloc_chunk`的数据结构。舞台的所有块从第一块到最后一块，即顶层块,都是链接在一起（下一个内存块是通过当前块的偏移或者`malloc_chunk`的`size`字段来找到，而不是通过它的实际地址。）。如果在这个过程中，有一个`malloc_chunk`被损坏了，在内存损坏的情况下，很常见，遍历就会失败，错误会报出来。工程师可以检查包围坏掉的内存块的内存块来寻找问题进一步的线索。
+
+- 小于Ptmalloc调整参数`max_fast`的小内存块（在64位默认值是80字节，在32位是72字节）在被释放的时候，会被放在特殊的盒子里，快速盒子。但是跟这些释放块关联的`malloc_chunk`没有从使用中编程空闲状态。这是为了更快重用常见于C++程序的小的内存块作的设计。这些命令考虑到了这些。如果一个块小且看上去在使用中，快速盒子也会被检查。如果内存块是在快速盒子找到的，那么它实际上是释放过的；否则，它的确在使用中。
+
+- 大内存块，比Ptmalloc可调整参数`mmap_threshold`(默认128KB)大，是通过系统API mmap从内核直接分配来的。它们通常与其他舞台在地址空间是隔离的。所以没有什么办法知道一个给定的地址是否在内存的中间。这个命令能正确的工作的前提是输入的地址是这种类型的内存块的开始。
+
+这些core analyzer的功能是为了帮助开发人员在调试内存相关的问题时有更多信息而设计的。下面的例子展示了基本的用法。尽管例子非常简单，它解释了一个内存是怎么从内存管理器的角度损坏的。让我们先看看源代码。
+
+```c
+01 #include <stdlib.h>
+02 #include <stdio.h>
+03 int main()
+04 {
+05     char* p1 = (char*)malloc(128);
+06     char* p2 = (char*)malloc(32);
+07
+08     // some work
+09
+10     free(p1);
+11
+12     // Memory block pointed to by p1 is returned to Ptmalloc
+13
+14     char* p3 = (char*)malloc(40);
+15
+16     // some more work
+17     // Memory block pointed to by p1 is allocated to user again with smaller size
+18
+19     return 0;
+20 }
+```
+
+变量`p1`指向的内存块很明显在第5行分配和在第10行释放了。在第10行以后每一个通过`p1`访问内存是无效的和具有”未定义“后果。从实际世界来的bug很有可能比这个更加难懂。它可能被埋没在复杂的数据对象或者在很多线程的环境里它在一个线程露出一点但是在另外一个线程出bug。
+
+上面的自定义调试器命令提供了底层内存块的见解和当它发生时可以解释某些行为。从下面的输出结果，在第8行，我们看到被变量`p1`指向的内存块的信息。它证实了内存块是有效的和用户空间开始于0x501010有136字节。尽管源代码要128字节，多出来的8字节是Ptmalloc添加的，为的是在16字节对齐下一个内存块。
+
+```
+(gdb) heap /b  p1
+Walking arena [0x501000 - 0x522000]
+[Block] In-use
+        (chunk=0x501000, size=144)
+        [Start Addr] 0x501010
+        [Block Size] 136
+```
+
+在第10行，内存块被释放了。查询变量`p1`我们可以看到下面的结果。通过边界标签，它的确是被释放了。如果用户通过变量`p1`访问内存，特别是写到这块内存，很大概率会损坏Ptmalloc在空闲块镶嵌的元数据，或者至少从内存块得到不相关的值。
+
+```
+
+(gdb) heap /b p1
+Walking arena [0x501000 - 0x522000]
+[Block] Free
+        (chunk=0x501000, size=144)
+        [Start Addr] 0x501010
+        [Block Size] 136
+```
+
+随着程序运行，在第14行以后，我们可以看到变量`p1`指向的内存块再次改变，如下面显示的。它恢复到使用中状态，因为Ptmalloc用这个空闲的内存块来满足第14行的另外一个请求。但是内存块的大小是40字节而不是原来的136字节。如果用户后面通过变量`p1`访问这个内存块，它很大可能会溢出这一块内存和覆写其他不相关的数据对象。你可以想象它将是很难调试的。
+
+```
+(gdb) block p1
+Walking arena [0x501000 - 0x522000]
+[Block] In-use
+        (chunk=0x501000, size=48)
+        [Start Addr] 0x501010
+        [Block Size] 40
+```

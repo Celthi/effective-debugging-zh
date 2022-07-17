@@ -6,7 +6,7 @@ Ptmalloc有两个关键的数据结构来管理堆内存块：边界标签和盒
 
 一个边界标签是一个小的数据结构，在Ptmalloc里叫做malloc_chunk，每一个内存块里都有，用来记录当前块的大小和状态。因此，在Ptmalloc术语里面，一个chunk是一个块的别名。
 
-XT:chunk和block的中文翻译均为“块”，为了避免混淆，block翻译为“块”，chunk就不翻译了。
+XT:chunk和block的中文翻译均为“块”，在可能混淆的时候，chunk就不翻译。
 
 ```c
 struct malloc_chunk {
