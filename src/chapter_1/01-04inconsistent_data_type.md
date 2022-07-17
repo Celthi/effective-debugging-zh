@@ -8,16 +8,14 @@
 
 ![图1-3 因为数据类型不一致导致的内存覆写](../images/fig-1-3-Memory-Corruption-Due-To-Inconsistent-Data-Type.png)
 
-You will probably ask how it could happen. It turned out the object is declared correctly in the header file. The bug comes from another header file which uses the following pragma:
 
-你可能会问题它是怎么能够发生。结果表明对象在头文件声明。bug来源于另外一个头文件使用下面的编译指令：
+你可能会问它是怎么能够发生。结果表明对象在头文件声明是正确的。bug来源于另外一个头文件使用下面的编译指令：
 
 ```
     #pragma pack(4)
     ...
     #pragma pack()
 ```
-The developer intends to pack the structure declared between these two pragma statements on 4 bytes boundary. The syntax is well understood by Microsoft’s Visual Studio C++ compiler. However, the problem occurs when the same code is compiled by the Visual Age C++ compiler on AIX.  This compiler has similar but slightly different pragma syntax to end the packing scope.
 那个开发者打算打包在两个编译指令中间的结构体为4字节边界。这个指令很好地被微软Visual Studio编译器理解。但是，当同样的代码被AIX里的Visual Age C++编译的时候，问题发生了。这个编译器有详细但是有点区别的编译指令语法来结束打包作用域。
 
 ```
@@ -26,4 +24,4 @@ The developer intends to pack the structure declared between these two pragma st
     #pragma pack(nopack)
 ```
 
-这个语法差别的结构是，Visual Age C++编译器捡起了开始的打包编译指令（第一行）但是忽略了结束的打包编译指令（最后一行）。在程序员意图结束数据打包的那一行之后，它继续打包数据结构体。在模块A,我们的受害数据对象生命在引入包含上面的编译指令的头文件的后面。在模块B，这个有问题的头文件没有被引入所以这个对象没有被打包。这就是不一致性是如何发生的。数据类型的调试符号准确地反映一个编译器如何查看一个数据类型。生成的机器指令将以这样操作数据对象。比如，在创建的时候，它请求了一个结构体的大小；对象的数据成员通过相对开始内存块的偏移来访问。
+这个语法差别的结构是，Visual Age C++编译器捡起了开始的打包编译指令（第一行）但是忽略了结束的打包编译指令（最后一行）。在程序员意图结束数据打包的那一行之后，它继续打包数据结构体。在模块A,我们的受害数据对象声明在引入包含上面的编译指令的头文件的后面。在模块B，这个有问题的头文件没有被引入所以这个对象没有被打包。这就是不一致性如何发生的。数据类型的调试符号准确地反映一个编译器如何查看一个数据类型。生成的机器指令也这样操作数据对象。比如，在创建的时候，它请求了一个结构体的大小；对象的数据成员通过相对开始内存块的偏移来访问。
