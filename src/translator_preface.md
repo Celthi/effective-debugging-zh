@@ -17,7 +17,7 @@ _Effective Debugging_ by [Michael Yan](https://github.com/yanqi27)，讲述了�
 
 本书都是我自己理解了以后的翻译，并对书中原来使用gdb脚本程序编写的插件，使用了最新的[core analyzer](https://github.com/yanqi27/core_analyzer)作了替换（如果可以替换的话）。因为core analyzer是Michael通过改造gdb将书中的点子变成了gdb的命令，使用更方便以及更强大。
 
-在线阅读网址：https://github.com/Celthi/effective-debugging-zh
+在线阅读网址：https://celthi.github.io/effective-debugging-zh/
 
 有些是我自己的理解，标记开头为XT，如，
 
