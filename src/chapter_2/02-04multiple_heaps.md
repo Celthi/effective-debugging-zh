@@ -1,4 +1,4 @@
-# 多堆
+# 多个堆
 
 现代内存管理器，像Ptmalloc和Tcmalloc，能够创建和管理多个堆。一个堆可以包含一个或多个段。这些段不需要在地址上连续。它们被逻辑性地组织在一起来服务一个线程集合、一个单独的特性或者一个特定的程序模块。多个堆可以让跑在多个处理器机器的多线程程序极大提高性能，而今天这样的程序是常态。还有其他的使用多个堆的优势：
 
@@ -8,7 +8,7 @@
 
 - 由于同一个堆的内存块大概率是给同一个任务创建的，他们倾向于有相同的生命周期，从而减少内存的碎片。
 
-作为一个例子，Windows上的C运行时为它自己的DLL单独使用一个堆。这也就是我们微幅么会看到好几个堆，即使是简单得如下面的程序。在程序退出之前，我们使用Windbg的拓展命令“!heap"来列出所有的堆。这个例子有三个堆。变量`p`指向一个从开始地址为`0x00330000`的默认堆里分配的内存块。
+作为一个例子，Windows上的C运行时为它自己的DLL单独使用一个堆。这也就是我们会看到好几个堆，即使是简单得如下面的程序。在程序退出之前，我们使用Windbg的拓展命令“!heap"来列出所有的堆。这个例子有三个堆。变量`p`指向一个从开始地址为`0x00330000`的默认堆里分配的内存块。
 
 
 ```c
@@ -32,8 +32,6 @@ void * 0x00000000`00333d50
 一个堆在Ptmalloc的术语里被叫做`arena`。所有的舞台(arena)被放到一个循环链接的列表中。为了保护堆数据结构的完整性，当一个线程在操作它，也就是分配和释放内存，的时候，它会被锁住用来排他性访问。如果另外一个内存请求从另一个线程来，访问会被拒绝。不同于等待前一个线程完成和释放arena，Ptmalloc会试图找到列表上的下一个可用舞台。
 
 如果成功，这个请求会被这个舞台满足。如果下一个舞台人就被其他线程占用，那么Ptmalloc会继续沿着列表寻找，知道一个空闲的舞台被找到。如果整个列表搜索完仍未找到可以立即使用的舞台，一个新的舞台会被创建和链接到已有的列表里。这个新的舞台会用来分配内存请求。每一个线程局部变量会被赋予给每一个线程，从而记录上一个满足一个内存分配的舞台。
-
-The thread tries to use this arena for the new request since it has better chance to lock it and the allocated memory has better cache locality. SmartHeapTM works very similar to Ptmalloc except the heap is called subpool. Instead of a circularly-linked list of arenas, SmartHeapTM keeps an array of subpools. A thread identification number is hashed into an index to the array so that various threads may use different subpools and achieve high performance under heavy concurrency.
 
 线程会试图使用这个舞台满足新的请求，因为这样有更好的机会来锁住它和分配具有更好缓存局部性的内存。
 
