@@ -42,3 +42,6 @@ https://www.zhihu.com/people/lan-tian-89
 - 可能会添加一些章节，因为现在新的调试技术的出现，目前计划是使用Python拓展gdb，以及Linux的符号服务器debuginfod。
 
 
+## License
+
+如果商业用途，请联系译者和原作者。
