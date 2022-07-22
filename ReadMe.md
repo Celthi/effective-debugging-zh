@@ -6,6 +6,7 @@ _Effective Debugging_ by [Michael Yan](https://github.com/yanqi27)，讲述了�
 
 - 调试符号
 - 内存管理器数据结构
+- 如何调试内存损坏bug
 - C/C++对象布局
 - 如何拓展调试器
 - 优化后的程序怎么调试
