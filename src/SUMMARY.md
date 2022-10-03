@@ -27,7 +27,7 @@
 - [第三章 内存损坏](./chapter_3.md)
     - [内存是怎么损坏的](./chapter_3/03-01how_is_memory_corrupted.md)
     - [调试内存损坏](./chapter_3/03-02debug_memory_corruption.md)
-    - [案例学习](./chapter_3/03-03cases_study.md)
+    - [内存调试工具](./chapter_3/03-03memory_debugging_tools.md)
 - [第四章 C/C++对象布局](./chapter_4.md)
     - [对齐](./chapter_4/04-01alignment_and_endian.md)
     - [大小端](./chapter_4/04-02endian.md)
