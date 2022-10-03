@@ -68,5 +68,5 @@ struct malloc_state {
 
 XT：我之前也写了一篇关于Ptmalloc的简单介绍，可以结合着看https://zhuanlan.zhihu.com/p/534003664
 
-XT：内存一般有申请和释放两个操作，如果有背景线程，那么会有三个操作。通常会将一些工作放在这些操作里面，类似于摊还。比如ptmalloc在没有fast bins和small bins找到内存会去unsorted bins里面找，而没有匹配的空闲块会被”顺便"放入常规盒子里。
+XT：内存一般有申请和释放两个操作，如果有背景线程，那么会有三个操作。通常会将一些工作放在这些操作里面（顺便把工作做了），类似于摊还。比如ptmalloc在没有fast bins和small bins找到内存会去unsorted bins里面找，而没有匹配的空闲块会被”顺便"放入常规盒子里。
 
