@@ -1,3 +1,9 @@
+# 更新
+2023-12-20
+本书已经出版
+![image](https://github.com/Celthi/effective-debugging-zh/assets/5187962/29b04963-5535-432c-b56f-8a2d5dbc2ec6)
+
+
 # 译者注
 
 _Effective Debugging_ by [Michael Yan](https://github.com/yanqi27)，讲述了如何更有效率地调试大型程序（以C/C++为例）的方法和技能。书中例子不仅丰富而且都是从实际的工作经验提取，观点和方法有效且具有可行性。
