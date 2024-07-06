@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>利用堆元数据 - Effective Debugging</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item affix "><a href="../translator_preface.html">译者注</a></li><li class="chapter-item affix "><a href="../introduction.html">引言</a></li><li class="chapter-item "><a href="../chapter_1.html"><strong aria-hidden="true">1.</strong> 第一章 调试符号和调试器</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_1/01-01debug_symbols.html"><strong aria-hidden="true">1.1.</strong> 调试符号</a></li><li class="chapter-item "><a href="../chapter_1/01-02debug_symbol_overview.html"><strong aria-hidden="true">1.2.</strong> 调试符号概览</a></li><li class="chapter-item "><a href="../chapter_1/01-03dwarf_format.html"><strong aria-hidden="true">1.3.</strong> DWARF格式</a></li><li class="chapter-item "><a href="../chapter_1/01-04inconsistent_data_type.html"><strong aria-hidden="true">1.4.</strong> 不一致的数据类型</a></li><li class="chapter-item "><a href="../chapter_1/01-05debugger_internal.html"><strong aria-hidden="true">1.5.</strong> 调试器的内在</a></li><li class="chapter-item "><a href="../chapter_1/01-06tips_and_caveats.html"><strong aria-hidden="true">1.6.</strong> 技巧和注意事项</a></li><li class="chapter-item "><a href="../chapter_1/01-07ad_hoc_debug_symbol.html"><strong aria-hidden="true">1.7.</strong> 特殊的调试符号</a></li><li class="chapter-item "><a href="../chapter_1/01-08breakpoints_and_watchpoints.html"><strong aria-hidden="true">1.8.</strong> 断点和监测点</a></li><li class="chapter-item "><a href="../chapter_1/01-09alter_execution_and_side_effect.html"><strong aria-hidden="true">1.9.</strong> 改变运行和副作用</a></li><li class="chapter-item "><a href="../chapter_1/01-10automate_symbol_matching.html"><strong aria-hidden="true">1.10.</strong> 自动化符号匹配</a></li><li class="chapter-item "><a href="../chapter_1/01-11post_mortem_analysis.html"><strong aria-hidden="true">1.11.</strong> 事后的分析</a></li><li class="chapter-item "><a href="../chapter_1/01-12memory_protection.html"><strong aria-hidden="true">1.12.</strong> 内存保护</a></li><li class="chapter-item "><a href="../chapter_1/01-13breakpoints_doesnt_work.html"><strong aria-hidden="true">1.13.</strong> 断点不工作</a></li><li class="chapter-item "><a href="../chapter_1/01-14summary.html"><strong aria-hidden="true">1.14.</strong> 总结</a></li></ol></li><li class="chapter-item expanded "><a href="../chapter_2.html"><strong aria-hidden="true">2.</strong> 第二章 堆数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_2/02-01understand_memory_manager.html"><strong aria-hidden="true">2.1.</strong> 理解内存管理器</a></li><li class="chapter-item "><a href="../chapter_2/02-02ptmalloc.html"><strong aria-hidden="true">2.2.</strong> Ptmalloc</a></li><li class="chapter-item "><a href="../chapter_2/02-03tcmalloc.html"><strong aria-hidden="true">2.3.</strong> Tcmalloc</a></li><li class="chapter-item "><a href="../chapter_2/02-04multiple_heaps.html"><strong aria-hidden="true">2.4.</strong> 多个堆</a></li><li class="chapter-item expanded "><a href="../chapter_2/02-05leverage_heap_metadata.html" class="active"><strong aria-hidden="true">2.5.</strong> 利用堆元数据</a></li><li class="chapter-item "><a href="../chapter_2/02-06summary.html"><strong aria-hidden="true">2.6.</strong> 总结</a></li></ol></li><li class="chapter-item "><a href="../chapter_3.html"><strong aria-hidden="true">3.</strong> 第三章 内存损坏</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_3/03-01how_is_memory_corrupted.html"><strong aria-hidden="true">3.1.</strong> 内存是怎么损坏的</a></li><li class="chapter-item "><a href="../chapter_3/03-02debug_memory_corruption.html"><strong aria-hidden="true">3.2.</strong> 调试内存损坏</a></li><li class="chapter-item "><a href="../chapter_3/03-03memory_debugging_tools.html"><strong aria-hidden="true">3.3.</strong> 内存调试工具</a></li></ol></li><li class="chapter-item "><a href="../chapter_4.html"><strong aria-hidden="true">4.</strong> 第四章 C/C++对象布局</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_4/04-01alignment_and_endian.html"><strong aria-hidden="true">4.1.</strong> 对齐</a></li><li class="chapter-item "><a href="../chapter_4/04-02endian.html"><strong aria-hidden="true">4.2.</strong> 大小端</a></li><li class="chapter-item "><a href="../chapter_4/04-03object_layout.html"><strong aria-hidden="true">4.3.</strong> C++对象布局</a></li><li class="chapter-item "><a href="../chapter_4/04-04search_references_tree.html"><strong aria-hidden="true">4.4.</strong> 搜索引用树</a></li></ol></li><li class="chapter-item "><a href="../chapter_5.html"><strong aria-hidden="true">5.</strong> 第五章 优化后的二进制</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_5/05-01diff_between_debug_and_release.html"><strong aria-hidden="true">5.1.</strong> 调试版本和发行版本的区别</a></li><li class="chapter-item "><a href="../chapter_5/05-02challenges_debugging_optimized_binary.html"><strong aria-hidden="true">5.2.</strong> 调试优化代码的挑战</a></li><li class="chapter-item "><a href="../chapter_5/05-03assembly_intro.html"><strong aria-hidden="true">5.3.</strong> 汇编代码介绍</a></li></ol></li><li class="chapter-item "><a href="../chapter_6.html"><strong aria-hidden="true">6.</strong> 第六章 进程镜像</a></li><li class="chapter-item "><a href="../chapter_7.html"><strong aria-hidden="true">7.</strong> 第七章 多线程问题</a></li><li class="chapter-item "><a href="../chapter_8.html"><strong aria-hidden="true">8.</strong> 第八章 更多调试进程</a></li><li class="chapter-item "><a href="../chapter_9.html"><strong aria-hidden="true">9.</strong> 第九章A Python拓展gdb</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_9/09-01pretty_printer.html"><strong aria-hidden="true">9.1.</strong> 美化输出</a></li><li class="chapter-item "><a href="../chapter_9/09-02dry.html"><strong aria-hidden="true">9.2.</strong> 将重复的工作变成一个命令</a></li><li class="chapter-item "><a href="../chapter_9/09-03write_your_owner_pretty_printer.html"><strong aria-hidden="true">9.3.</strong> 编写你自己的美化器</a></li></ol></li><li class="chapter-item "><a href="../chapter_10.html"><strong aria-hidden="true">10.</strong> 第十章A 使用地址消毒工具</a></li><li class="chapter-item "><a href="../appendix_A.html"><strong aria-hidden="true">11.</strong> 附录A 拓展调试能力</a></li><li class="chapter-item "><a href="../appendix_B.html"><strong aria-hidden="true">12.</strong> 附录B 调试混合语言</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Effective Debugging</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Celthi/effective-debugging-zh" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="更新"><a class="header" href="#更新">更新</a></h1>
+<p>2024-07-05
+本书已经出版
+<img src="https://github.com/Celthi/effective-debugging-zh/assets/5187962/29b04963-5535-432c-b56f-8a2d5dbc2ec6" alt="image" />
+由于本库的草稿是我之前一个人写的，所以质量和正确性都不如经过两位作者和出版社编辑审阅和校正过的书稿。
+如果你想阅读更加完善的版本，推荐购买正版书籍。</p>
+<h1 id="利用堆元数据"><a class="header" href="#利用堆元数据">利用堆元数据</a></h1>
+<p>在前一个章节中，我们看到了两个受欢迎的内存管理器的实现。正如我在本章说的，理解堆的数据结构对调试内存问题有很大帮助。因为堆元素告诉我们应用程序数据对象的基本状态，它可以提供内存损坏是如何产生的线索。</p>
+<p>尽管许多内存管理器看起来很像，不用说，它们使用不同的数据结构或多或少地记录正在使用和已经释放的内存块。不管我们在程序中决定使用何种内存管理器，为了尽可能的使用我们知识优势，我们应该尽量去学一点它的堆数据结构。通过解密一个内存块的比特和字节，它可以揭露底层的数据对象的见解信息和帮助在各种方向调试，我会在稍后展示一些例子。</p>
+<p>从广义上讲，调试器不知道如何去解释堆元数据。我们可以通过检查内存的内容来获取信息。但是，手动调查一个巨大的内存区域是效率地的。因此，此刻是我们使用调试器插件自动化工作的好时候。在我每天的工作中，我使用一些这样的调试器插件。我已经把这些插件集成到了<a href="https://github.com/yanqi27/core_analyzer">core analyzer</a>里面，关于带有core analyzer功能的gdb的安装和入门可以查看对应的文档。</p>
+<p>这些拓展的功能命令显示一个被Ptmalloc管理的内存块或者舞台的信息。这些命令的实现利用了内存管理器的内部数据结构体，从而查询和检验一个堆的地址、或者遍历整个堆来寻找潜在的内存损坏、或者打印出堆的统计情况。下面的列表是这些命令用法的一些例子。</p>
+<p>第一个命令显示<code>block</code>，接收一个地址然后输出在这个地址内存块的状态。在这个例子中，数据组的第十二个元素存了一个指向大小为56个字节的内存块且这个内存块正在使用中。注意在括号里的chunk的信息是Ptmalloc的内部数据结构。它在用户内存块前面16个字节的地方开始，大小是64字节。用户空间开始于地址0x503440，大小是56字节。我们可以看到有8个字节的内部数据结构消耗。</p>
+<pre><code>(gdb) block  parray[12]
+[Block] In-use
+        (chunk=0x503430, size=64)
+        [Start Addr] 0x503440
+        [Block Size] 56
+</code></pre>
+<p>第二个例子显示了Ptmalloc管理的主舞台的可调整参数和统计信息。舞台开始地址是0x501000，结束地址是0x60b000。在这1064KB的内存堆，总共1070640字节的1021个内存块被分配给了用户。剩下的18896字节是空闲的，被分为5个块。</p>
+<pre><code>gdb) heap
+Main Arena [0x501000 - 0x60b000] 1064 KB
+        Top chunk [0x606860 - 0x60b000] 18336 bytes
+        Max size for fastbin is 80 bytes
+        Bins (free lists) contain 4 blocks 560 bytes
+        Walking arena:
+                [Free]   5 blocks 18896 bytes
+                [In-Use] 1021 blocks 1070640 bytes
+</code></pre>
+<p>我们是怎么从Ptmalloc获取这些信息的？正如我们在前面的章节知道的，每一个内存块前放着一个小的数据结构，叫<code>malloc_chunk</code>，块标签。如果用户输入一个有效的地址，由函数<code>malloc</code>返回的，内存块的标签正好在这个地址的前面。<code>size</code>字段说明当前块的大小。为了知道当前块是使用中还是空闲的，我们需要计算下一个块的地址。当前块的状态编码在下一个块的<code>size</code>字段。</p>
+<pre><code class="language-c">// Get the next chunk which has the prev_inuse bit flag
+struct malloc_chunk next_chunk;
+if (!ca_read_variable(chunk_addr + chunksz, &amp;next_chunk))
+    break;
+
+if (prev_inuse(&amp;next_chunk) &amp;&amp;
+    !in_cache((mchunkptr)chunk_addr, chunksz))
+{
+    // this is an in-use block
+    blk.size = chunksz - size_t_sz;
+    if (blk.size &gt; smallest-&gt;size)
+    {
+        blk.addr = chunk_addr + size_t_sz * 2;
+        blk.inuse = true;
+        add_one_big_block(blks, num, &amp;blk);
+    }
+}
+</code></pre>
+<p>可以看这里的代码实现https://github.com/yanqi27/core_analyzer/blob/master/src/heap_ptmalloc_2_27.cpp#L580</p>
+<p>上面的两个命令使用了我们之前讨论的Ptmalloc的关键数据结构。下面强调一些点：</p>
+<ul>
+<li>
+<p>这些命令处理32位和64位应用程序。数据结构的内存布局是通过<code>sizeof</code>操作符计算的，而不是通过硬编码的偏移。</p>
+</li>
+<li>
+<p>这些命令开始时选择主舞台或者其中一个动态舞台。如若结果表明一个舞台没有包含这个输入地址，命令会选择链接列表的下一个舞台进行工作，知道这个内存块被找到或者所有的舞台被穷尽了。</p>
+</li>
+<li>
+<p>由于命令从头到尾遍历整个舞台，地址是在内存块的中间或者泛指是一个无效的地址，都没有关系。这个结果表明了从内存管理器角度的内存块，从而可以跟应用程序的角度进行对比，发现蛛丝马迹。</p>
+</li>
+<li>
+<p>堆遍历命令是通过块标签，或者<code>malloc_chunk</code>的数据结构。舞台的所有块从第一块到最后一块，即顶层块,都是链接在一起（下一个内存块是通过当前块的偏移或者<code>malloc_chunk</code>的<code>size</code>字段来找到，而不是通过它的实际地址。）。如果在这个过程中，有一个<code>malloc_chunk</code>被损坏了，在内存损坏的情况下，很常见，遍历就会失败，错误会报出来。工程师可以检查包围坏掉的内存块的内存块来寻找问题进一步的线索。</p>
+</li>
+<li>
+<p>小于Ptmalloc调整参数<code>max_fast</code>的小内存块（在64位默认值是80字节，在32位是72字节）在被释放的时候，会被放在特殊的盒子里，快速盒子。但是跟这些释放块关联的<code>malloc_chunk</code>没有从使用中编程空闲状态。这是为了更快重用常见于C++程序的小的内存块作的设计。这些命令考虑到了这些。如果一个块小且看上去在使用中，快速盒子也会被检查。如果内存块是在快速盒子找到的，那么它实际上是释放过的；否则，它的确在使用中。</p>
+</li>
+<li>
+<p>大内存块，比Ptmalloc可调整参数<code>mmap_threshold</code>(默认128KB)大，是通过系统API mmap从内核直接分配来的。它们通常与其他舞台在地址空间是隔离的。所以没有什么办法知道一个给定的地址是否在内存的中间。这个命令能正确的工作的前提是输入的地址是这种类型的内存块的开始。</p>
+</li>
+</ul>
+<p>这些core analyzer的功能是为了帮助开发人员在调试内存相关的问题时有更多信息而设计的。下面的例子展示了基本的用法。尽管例子非常简单，它解释了一个内存是怎么从内存管理器的角度损坏的。让我们先看看源代码。</p>
+<pre><code class="language-c">01 #include &lt;stdlib.h&gt;
+02 #include &lt;stdio.h&gt;
+03 int main()
+04 {
+05     char* p1 = (char*)malloc(128);
+06     char* p2 = (char*)malloc(32);
+07
+08     // some work
+09
+10     free(p1);
+11
+12     // Memory block pointed to by p1 is returned to Ptmalloc
+13
+14     char* p3 = (char*)malloc(40);
+15
+16     // some more work
+17     // Memory block pointed to by p1 is allocated to user again with smaller size
+18
+19     return 0;
+20 }
+</code></pre>
+<p>变量<code>p1</code>指向的内存块很明显在第5行分配和在第10行释放了。在第10行以后每一个通过<code>p1</code>访问内存是无效的和具有”未定义“后果。从实际世界来的bug很有可能比这个更加难懂。它可能被埋没在复杂的数据对象或者在很多线程的环境里它在一个线程露出一点但是在另外一个线程出bug。</p>
+<p>上面的自定义调试器命令提供了底层内存块的见解和当它发生时可以解释某些行为。从下面的输出结果，在第8行，我们看到被变量<code>p1</code>指向的内存块的信息。它证实了内存块是有效的和用户空间开始于0x501010有136字节。尽管源代码要128字节，多出来的8字节是Ptmalloc添加的，为的是在16字节对齐下一个内存块。</p>
+<pre><code>(gdb) heap /b  p1
+Walking arena [0x501000 - 0x522000]
+[Block] In-use
+        (chunk=0x501000, size=144)
+        [Start Addr] 0x501010
+        [Block Size] 136
+</code></pre>
+<p>在第10行，内存块被释放了。查询变量<code>p1</code>我们可以看到下面的结果。通过边界标签，它的确是被释放了。如果用户通过变量<code>p1</code>访问内存，特别是写到这块内存，很大概率会损坏Ptmalloc在空闲块镶嵌的元数据，或者至少从内存块得到不相关的值。</p>
+<pre><code>
+(gdb) heap /b p1
+Walking arena [0x501000 - 0x522000]
+[Block] Free
+        (chunk=0x501000, size=144)
+        [Start Addr] 0x501010
+        [Block Size] 136
+</code></pre>
+<p>随着程序运行，在第14行以后，我们可以看到变量<code>p1</code>指向的内存块再次改变，如下面显示的。它恢复到使用中状态，因为Ptmalloc用这个空闲的内存块来满足第14行的另外一个请求。但是内存块的大小是40字节而不是原来的136字节。如果用户后面通过变量<code>p1</code>访问这个内存块，它很大可能会溢出这一块内存和覆写其他不相关的数据对象。你可以想象它将是很难调试的。</p>
+<pre><code>(gdb) block p1
+Walking arena [0x501000 - 0x522000]
+[Block] In-use
+        (chunk=0x501000, size=48)
+        [Start Addr] 0x501010
+        [Block Size] 40
+</code></pre>
+<p>XT:这里有一部分应该是关于Tcmalloc，以后补充</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../chapter_2/02-04multiple_heaps.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../chapter_2/02-06summary.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../chapter_2/02-04multiple_heaps.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../chapter_2/02-06summary.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

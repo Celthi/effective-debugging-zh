@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>对齐 - Effective Debugging</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item affix "><a href="../translator_preface.html">译者注</a></li><li class="chapter-item affix "><a href="../introduction.html">引言</a></li><li class="chapter-item "><a href="../chapter_1.html"><strong aria-hidden="true">1.</strong> 第一章 调试符号和调试器</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_1/01-01debug_symbols.html"><strong aria-hidden="true">1.1.</strong> 调试符号</a></li><li class="chapter-item "><a href="../chapter_1/01-02debug_symbol_overview.html"><strong aria-hidden="true">1.2.</strong> 调试符号概览</a></li><li class="chapter-item "><a href="../chapter_1/01-03dwarf_format.html"><strong aria-hidden="true">1.3.</strong> DWARF格式</a></li><li class="chapter-item "><a href="../chapter_1/01-04inconsistent_data_type.html"><strong aria-hidden="true">1.4.</strong> 不一致的数据类型</a></li><li class="chapter-item "><a href="../chapter_1/01-05debugger_internal.html"><strong aria-hidden="true">1.5.</strong> 调试器的内在</a></li><li class="chapter-item "><a href="../chapter_1/01-06tips_and_caveats.html"><strong aria-hidden="true">1.6.</strong> 技巧和注意事项</a></li><li class="chapter-item "><a href="../chapter_1/01-07ad_hoc_debug_symbol.html"><strong aria-hidden="true">1.7.</strong> 特殊的调试符号</a></li><li class="chapter-item "><a href="../chapter_1/01-08breakpoints_and_watchpoints.html"><strong aria-hidden="true">1.8.</strong> 断点和监测点</a></li><li class="chapter-item "><a href="../chapter_1/01-09alter_execution_and_side_effect.html"><strong aria-hidden="true">1.9.</strong> 改变运行和副作用</a></li><li class="chapter-item "><a href="../chapter_1/01-10automate_symbol_matching.html"><strong aria-hidden="true">1.10.</strong> 自动化符号匹配</a></li><li class="chapter-item "><a href="../chapter_1/01-11post_mortem_analysis.html"><strong aria-hidden="true">1.11.</strong> 事后的分析</a></li><li class="chapter-item "><a href="../chapter_1/01-12memory_protection.html"><strong aria-hidden="true">1.12.</strong> 内存保护</a></li><li class="chapter-item "><a href="../chapter_1/01-13breakpoints_doesnt_work.html"><strong aria-hidden="true">1.13.</strong> 断点不工作</a></li><li class="chapter-item "><a href="../chapter_1/01-14summary.html"><strong aria-hidden="true">1.14.</strong> 总结</a></li></ol></li><li class="chapter-item "><a href="../chapter_2.html"><strong aria-hidden="true">2.</strong> 第二章 堆数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_2/02-01understand_memory_manager.html"><strong aria-hidden="true">2.1.</strong> 理解内存管理器</a></li><li class="chapter-item "><a href="../chapter_2/02-02ptmalloc.html"><strong aria-hidden="true">2.2.</strong> Ptmalloc</a></li><li class="chapter-item "><a href="../chapter_2/02-03tcmalloc.html"><strong aria-hidden="true">2.3.</strong> Tcmalloc</a></li><li class="chapter-item "><a href="../chapter_2/02-04multiple_heaps.html"><strong aria-hidden="true">2.4.</strong> 多个堆</a></li><li class="chapter-item "><a href="../chapter_2/02-05leverage_heap_metadata.html"><strong aria-hidden="true">2.5.</strong> 利用堆元数据</a></li><li class="chapter-item "><a href="../chapter_2/02-06summary.html"><strong aria-hidden="true">2.6.</strong> 总结</a></li></ol></li><li class="chapter-item "><a href="../chapter_3.html"><strong aria-hidden="true">3.</strong> 第三章 内存损坏</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_3/03-01how_is_memory_corrupted.html"><strong aria-hidden="true">3.1.</strong> 内存是怎么损坏的</a></li><li class="chapter-item "><a href="../chapter_3/03-02debug_memory_corruption.html"><strong aria-hidden="true">3.2.</strong> 调试内存损坏</a></li><li class="chapter-item "><a href="../chapter_3/03-03memory_debugging_tools.html"><strong aria-hidden="true">3.3.</strong> 内存调试工具</a></li></ol></li><li class="chapter-item expanded "><a href="../chapter_4.html"><strong aria-hidden="true">4.</strong> 第四章 C/C++对象布局</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../chapter_4/04-01alignment_and_endian.html" class="active"><strong aria-hidden="true">4.1.</strong> 对齐</a></li><li class="chapter-item "><a href="../chapter_4/04-02endian.html"><strong aria-hidden="true">4.2.</strong> 大小端</a></li><li class="chapter-item "><a href="../chapter_4/04-03object_layout.html"><strong aria-hidden="true">4.3.</strong> C++对象布局</a></li><li class="chapter-item "><a href="../chapter_4/04-04search_references_tree.html"><strong aria-hidden="true">4.4.</strong> 搜索引用树</a></li></ol></li><li class="chapter-item "><a href="../chapter_5.html"><strong aria-hidden="true">5.</strong> 第五章 优化后的二进制</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_5/05-01diff_between_debug_and_release.html"><strong aria-hidden="true">5.1.</strong> 调试版本和发行版本的区别</a></li><li class="chapter-item "><a href="../chapter_5/05-02challenges_debugging_optimized_binary.html"><strong aria-hidden="true">5.2.</strong> 调试优化代码的挑战</a></li><li class="chapter-item "><a href="../chapter_5/05-03assembly_intro.html"><strong aria-hidden="true">5.3.</strong> 汇编代码介绍</a></li></ol></li><li class="chapter-item "><a href="../chapter_6.html"><strong aria-hidden="true">6.</strong> 第六章 进程镜像</a></li><li class="chapter-item "><a href="../chapter_7.html"><strong aria-hidden="true">7.</strong> 第七章 多线程问题</a></li><li class="chapter-item "><a href="../chapter_8.html"><strong aria-hidden="true">8.</strong> 第八章 更多调试进程</a></li><li class="chapter-item "><a href="../chapter_9.html"><strong aria-hidden="true">9.</strong> 第九章A Python拓展gdb</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_9/09-01pretty_printer.html"><strong aria-hidden="true">9.1.</strong> 美化输出</a></li><li class="chapter-item "><a href="../chapter_9/09-02dry.html"><strong aria-hidden="true">9.2.</strong> 将重复的工作变成一个命令</a></li><li class="chapter-item "><a href="../chapter_9/09-03write_your_owner_pretty_printer.html"><strong aria-hidden="true">9.3.</strong> 编写你自己的美化器</a></li></ol></li><li class="chapter-item "><a href="../chapter_10.html"><strong aria-hidden="true">10.</strong> 第十章A 使用地址消毒工具</a></li><li class="chapter-item "><a href="../appendix_A.html"><strong aria-hidden="true">11.</strong> 附录A 拓展调试能力</a></li><li class="chapter-item "><a href="../appendix_B.html"><strong aria-hidden="true">12.</strong> 附录B 调试混合语言</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Effective Debugging</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Celthi/effective-debugging-zh" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="更新"><a class="header" href="#更新">更新</a></h1>
+<p>2024-07-05
+本书已经出版
+<img src="https://github.com/Celthi/effective-debugging-zh/assets/5187962/29b04963-5535-432c-b56f-8a2d5dbc2ec6" alt="image" />
+由于本库的草稿是我之前一个人写的，所以质量和正确性都不如经过两位作者和出版社编辑审阅和校正过的书稿。
+如果你想阅读更加完善的版本，推荐购买正版书籍。</p>
+<h1 id="对齐和大小端-alignment-and-endian"><a class="header" href="#对齐和大小端-alignment-and-endian">对齐和大小端 （Alignment and Endian)</a></h1>
+<p>各种架构支持类似的原始数据类型，如，字节/byte，half word，word，double word，等等。</p>
+<p>不同的指令被设计用来处理指定的数据类型。举个例子，加载一个字节的指令跟加载一个word的指令不一样。</p>
+<p>一些架构，比如SPARC，需要一个内存索引的地址恰当地对齐。比如，一个word（C/C++中的整数）必须四字节对齐，这意味着对应的地址必须可以被4整除。</p>
+<p>如果地址没有按要求对齐，那么一个硬件异常就会丢出。这常常会在应用程序转换为一个Bus错误信号。</p>
+<p>其他一些架构，比如x86家族，没有这样的严格要求。但是如果数据不对齐，它可能会在特定的场合下带来性能损耗。</p>
+<p>正因为如此，所有的编译器默认会把数据放在合适的对齐地方，即使在那些不强制要求对齐的架构。</p>
+<p>C/C++数据类型，如字符，短整数，整数，长整数，浮点数，双浮点数，等等，在目标架构里有对应的数据类型。</p>
+<p>所以，编译器会相应地对齐这些数据类型。对于整合的数据类型，比如结构体和数组，编译器必须确保所有的数据字段在任何的嵌套层面对齐。</p>
+<p>结构体的对齐要求是所有单个字段的最大要求。</p>
+<p>数组的对齐要求是和数组里面每个元素的一样。</p>
+<p>如果整合类型有多个层级，这些规则适用于所有的层级。举个例子，下面这个C结构体，</p>
+<pre><code class="language-c">struct aggr_type{
+    char c;
+    int i; 
+    short s;
+    double d;};
+</code></pre>
+<p>在所有的字段中，字段d的对齐要求最大，8个字节。所以，这个结构体aggr_type需要按8字节对齐。</p>
+<p>它同时也需要一些填充，从而确保每个字段满足它的对齐要求。</p>
+<p>图4-1描绘了上面的结构体对应的填充（灰色的方框）。字段c一共有3个字节的填充，字段s有6个字节的填充。这些填充使得紧接的字段i和字段d相应地对齐在需要的4字节和8字节。</p>
+<p>图片</p>
+<p>(XT:有一些面试题，喜欢问怎么排列相应的字段，从而更省空间。)</p>
+<p>当编译器分配栈上的变量时，它会确保每一个变量，原始类型或者是整合类型，满足它的对齐要求。</p>
+<p>除此以外，ABI也会指出整个栈帧需要对齐的某个最小值，从而保证每一个栈上的局部变量和系统的数据可以合适地对齐。所以本书出现的栈变量之间有很多对齐填充并非不常见。</p>
+<p>堆里分配的数据对象也要满足同样的要求。内存管理器只知道请求的内存块大小。它根本不知道背后的数据对象的数据类型，也不知道它的对齐要求。</p>
+<p>为了正确地工作，内存管理器确保返回的内存块对齐在目标架构尽可能大的要求。尽管这意味着一些空间的浪费，因为实际的数据对象的对齐可能不需要这么多。</p>
+<p>（XT,举个例子可能会更好理解，如果申请32字节，那么返回的内存块的地址必须是可以整除32，如果是1024个字节，那么是不是必须整除1024呢？）</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../chapter_4.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../chapter_4/04-02endian.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../chapter_4.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../chapter_4/04-02endian.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>调试器的内在 - Effective Debugging</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item affix "><a href="../translator_preface.html">译者注</a></li><li class="chapter-item affix "><a href="../introduction.html">引言</a></li><li class="chapter-item expanded "><a href="../chapter_1.html"><strong aria-hidden="true">1.</strong> 第一章 调试符号和调试器</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_1/01-01debug_symbols.html"><strong aria-hidden="true">1.1.</strong> 调试符号</a></li><li class="chapter-item "><a href="../chapter_1/01-02debug_symbol_overview.html"><strong aria-hidden="true">1.2.</strong> 调试符号概览</a></li><li class="chapter-item "><a href="../chapter_1/01-03dwarf_format.html"><strong aria-hidden="true">1.3.</strong> DWARF格式</a></li><li class="chapter-item "><a href="../chapter_1/01-04inconsistent_data_type.html"><strong aria-hidden="true">1.4.</strong> 不一致的数据类型</a></li><li class="chapter-item expanded "><a href="../chapter_1/01-05debugger_internal.html" class="active"><strong aria-hidden="true">1.5.</strong> 调试器的内在</a></li><li class="chapter-item "><a href="../chapter_1/01-06tips_and_caveats.html"><strong aria-hidden="true">1.6.</strong> 技巧和注意事项</a></li><li class="chapter-item "><a href="../chapter_1/01-07ad_hoc_debug_symbol.html"><strong aria-hidden="true">1.7.</strong> 特殊的调试符号</a></li><li class="chapter-item "><a href="../chapter_1/01-08breakpoints_and_watchpoints.html"><strong aria-hidden="true">1.8.</strong> 断点和监测点</a></li><li class="chapter-item "><a href="../chapter_1/01-09alter_execution_and_side_effect.html"><strong aria-hidden="true">1.9.</strong> 改变运行和副作用</a></li><li class="chapter-item "><a href="../chapter_1/01-10automate_symbol_matching.html"><strong aria-hidden="true">1.10.</strong> 自动化符号匹配</a></li><li class="chapter-item "><a href="../chapter_1/01-11post_mortem_analysis.html"><strong aria-hidden="true">1.11.</strong> 事后的分析</a></li><li class="chapter-item "><a href="../chapter_1/01-12memory_protection.html"><strong aria-hidden="true">1.12.</strong> 内存保护</a></li><li class="chapter-item "><a href="../chapter_1/01-13breakpoints_doesnt_work.html"><strong aria-hidden="true">1.13.</strong> 断点不工作</a></li><li class="chapter-item "><a href="../chapter_1/01-14summary.html"><strong aria-hidden="true">1.14.</strong> 总结</a></li></ol></li><li class="chapter-item "><a href="../chapter_2.html"><strong aria-hidden="true">2.</strong> 第二章 堆数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_2/02-01understand_memory_manager.html"><strong aria-hidden="true">2.1.</strong> 理解内存管理器</a></li><li class="chapter-item "><a href="../chapter_2/02-02ptmalloc.html"><strong aria-hidden="true">2.2.</strong> Ptmalloc</a></li><li class="chapter-item "><a href="../chapter_2/02-03tcmalloc.html"><strong aria-hidden="true">2.3.</strong> Tcmalloc</a></li><li class="chapter-item "><a href="../chapter_2/02-04multiple_heaps.html"><strong aria-hidden="true">2.4.</strong> 多个堆</a></li><li class="chapter-item "><a href="../chapter_2/02-05leverage_heap_metadata.html"><strong aria-hidden="true">2.5.</strong> 利用堆元数据</a></li><li class="chapter-item "><a href="../chapter_2/02-06summary.html"><strong aria-hidden="true">2.6.</strong> 总结</a></li></ol></li><li class="chapter-item "><a href="../chapter_3.html"><strong aria-hidden="true">3.</strong> 第三章 内存损坏</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_3/03-01how_is_memory_corrupted.html"><strong aria-hidden="true">3.1.</strong> 内存是怎么损坏的</a></li><li class="chapter-item "><a href="../chapter_3/03-02debug_memory_corruption.html"><strong aria-hidden="true">3.2.</strong> 调试内存损坏</a></li><li class="chapter-item "><a href="../chapter_3/03-03memory_debugging_tools.html"><strong aria-hidden="true">3.3.</strong> 内存调试工具</a></li></ol></li><li class="chapter-item "><a href="../chapter_4.html"><strong aria-hidden="true">4.</strong> 第四章 C/C++对象布局</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_4/04-01alignment_and_endian.html"><strong aria-hidden="true">4.1.</strong> 对齐</a></li><li class="chapter-item "><a href="../chapter_4/04-02endian.html"><strong aria-hidden="true">4.2.</strong> 大小端</a></li><li class="chapter-item "><a href="../chapter_4/04-03object_layout.html"><strong aria-hidden="true">4.3.</strong> C++对象布局</a></li><li class="chapter-item "><a href="../chapter_4/04-04search_references_tree.html"><strong aria-hidden="true">4.4.</strong> 搜索引用树</a></li></ol></li><li class="chapter-item "><a href="../chapter_5.html"><strong aria-hidden="true">5.</strong> 第五章 优化后的二进制</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_5/05-01diff_between_debug_and_release.html"><strong aria-hidden="true">5.1.</strong> 调试版本和发行版本的区别</a></li><li class="chapter-item "><a href="../chapter_5/05-02challenges_debugging_optimized_binary.html"><strong aria-hidden="true">5.2.</strong> 调试优化代码的挑战</a></li><li class="chapter-item "><a href="../chapter_5/05-03assembly_intro.html"><strong aria-hidden="true">5.3.</strong> 汇编代码介绍</a></li></ol></li><li class="chapter-item "><a href="../chapter_6.html"><strong aria-hidden="true">6.</strong> 第六章 进程镜像</a></li><li class="chapter-item "><a href="../chapter_7.html"><strong aria-hidden="true">7.</strong> 第七章 多线程问题</a></li><li class="chapter-item "><a href="../chapter_8.html"><strong aria-hidden="true">8.</strong> 第八章 更多调试进程</a></li><li class="chapter-item "><a href="../chapter_9.html"><strong aria-hidden="true">9.</strong> 第九章A Python拓展gdb</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../chapter_9/09-01pretty_printer.html"><strong aria-hidden="true">9.1.</strong> 美化输出</a></li><li class="chapter-item "><a href="../chapter_9/09-02dry.html"><strong aria-hidden="true">9.2.</strong> 将重复的工作变成一个命令</a></li><li class="chapter-item "><a href="../chapter_9/09-03write_your_owner_pretty_printer.html"><strong aria-hidden="true">9.3.</strong> 编写你自己的美化器</a></li></ol></li><li class="chapter-item "><a href="../chapter_10.html"><strong aria-hidden="true">10.</strong> 第十章A 使用地址消毒工具</a></li><li class="chapter-item "><a href="../appendix_A.html"><strong aria-hidden="true">11.</strong> 附录A 拓展调试能力</a></li><li class="chapter-item "><a href="../appendix_B.html"><strong aria-hidden="true">12.</strong> 附录B 调试混合语言</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Effective Debugging</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Celthi/effective-debugging-zh" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="更新"><a class="header" href="#更新">更新</a></h1>
+<p>2024-07-05
+本书已经出版
+<img src="https://github.com/Celthi/effective-debugging-zh/assets/5187962/29b04963-5535-432c-b56f-8a2d5dbc2ec6" alt="image" />
+由于本库的草稿是我之前一个人写的，所以质量和正确性都不如经过两位作者和出版社编辑审阅和校正过的书稿。
+如果你想阅读更加完善的版本，推荐购买正版书籍。</p>
+<h1 id="调试器的内在"><a class="header" href="#调试器的内在">调试器的内在</a></h1>
+<p>大部分程序员通过实践学习怎样使用一个调试器。依赖于经验，一些人比另外一些人更熟悉调试器各种命令。但是只有一小部分知道调试器的内在结构。在本节中，我将从用户的视角讨论一些编译器的实现细节。这不仅仅是为了满足你对调试器魔法的好奇，也可能更重要的是帮助你更好地理解调试器，因而你知道最大优势地使用工具。</p>
+<p>调试器仅仅是另外一个应用程序。有趣的是用户可以使用一个调试器跟踪另外一个调试器实例。这其实是一个学习调试器如何工作有效的方法。过去为了日常的调试工作，我编译了一个调试版本的gdb调试器。每当我有调试器本身的问题，我就会启动一个gdb并把它依附到另外一个活跃的gdb。这样子，我可以看到所有它的内在数据结构。</p>
+<p>一个源代码级别的调试器通常有三个模块：用户界面，符号管理和目标处理。</p>
+<p>用户界面是调试器的代表层，服务它的前端。它跟其他应用程序一样与用户交互。一个调试器可以有一个图形接口或者命令行接口，或者两者皆有。它的基本功能是将用户输入转换成后端调试引擎的API调用。几乎所有的菜单或者按钮都有到后端命令的直接映射。事实上，许多具有图形接口的调试器，像ldd（data display debugger)，Windbg和sunstudio，有一个让用户直接输入命令的目标调试器的命令行窗口。</p>
+<p>符号管理负责提供目标的调试符号。这个模块读入二进制文件，然后解析文件里面的调试符号。它创建一个调试符号的内部表示和给打印变量提供类型信息。调试符号的可用性和它的内容决定了一个调试器可以为了你做什么。如果调试符号不对或者不全，那么调试器不能按预想的那样工作。比如，不匹配的文件（可执行文件或者程序数据库文件）拥有错误的调试符号；可执行文件的调试符号被去掉了或者没有pdb文件的DLLs或者具有公开（部分）的调试符号只会提供有限的调试能力。</p>
+<p>在前面的章节，我们已经看到调试符号是怎么组织和存储在文件中的。开始，调试器按照给定的调试符号路径搜索文件，接着它检查文件的大小，时间戳，checksum等等，来验证与被调试进程加载的镜像文件的一致性。没有正确的匹配调试符号，一个调试器不能够正常的工作。比如，如果找到没有匹配的内核符号，Windows调试器Windbg会发出如下的警告信息，</p>
+<pre><code>Frames below may be incorrect and/or missing, no symbols loaded for msvcr80.dll]
+msvcr80.dll!78138a04() 
+msvcr80.dll!78138a8c() 
+SHSMP.DLL!_MemFreePtr@4()  + 0x4b bytes 
+SHSMP.DLL!_shi_free1()  + 0x1c bytes 
+SHSMP.DLL!_shi_free()  + 0xa bytes 
+M8Log2.dll!std::allocator&lt;MBase::SmartPtrI&lt;MLog::Destination&gt; &gt;::deallocate(MBase::SmartPtrI&lt;MLog::Destination&gt; * _Ptr=0x01a51638, unsigned int __formal=2)  Line 141 + 0x9 bytes C++ 
+M8Log2.dll!MLog::Dispatcher_Impl::LogMessage(const MLog::Logger &amp; iLogger={...}, const char * iMessageText=0x00770010, unsigned int iMessageID=8)  Line 78 + 0x1c bytes      C++
+
+</code></pre>
+<p>注意属于系统运行库msvcr80.dll的前两个帧。此时Windbg抱怨没有找到这个DLL的调试符号。优化的代码想系统库默认打开了FPO编译器选项。因此，一个调试器需要FPO调试符号来成功回卷调用栈。否则，一个用户可能看到不合逻辑的调用栈。在这个特别的案子了，我们可以设置Windbg从微软在线调试符号网址下载系统库的公开调试符号。稍后我会简单讨论Windows符号服务器。</p>
+<p>如果调试符号匹配了，那么调试器的符号管理就会打开文件和从前面描述的文件的各个调试section或者单独的数据库来读入调试符号。调试符号被解析用来创建一个内部表示。但是，调试器通常为了避免在启动时消耗太多时间和空间，不会一次性读入所有的调试符号。有些信息，比如行号表和基准栈信息表是在他们需要的时候创建。初始时，它仅仅扫描文件来快速的找到基本信息如源文件和当前作用域的符号。当一个用户执行一个需要详细的调试符号（如打印变量）的命令，调试器会按需的从对应的文件读入详细的调试符号。有趣地是，gdb的符号加载命令的“-readnow”选项允许用户覆盖这个两阶段符号读入策略。</p>
+<p>目标处理模块在系统和硬件层面处理被调试的进程，也就是，debugee。比如，它控制debugee的运行，读写debugee的内存，获取一个线程的调用栈等等。因为底层的操作，它是平台相关的。在Linux，含许多其他的UNIX变化，内核提供了一个系统调用<code>ptrace</code>使得一个进程，调试器或者其他工具像系统调用跟踪器strace，查询和控制另外一个进程debugee的运行。Linux使用信号来同步调试器和debugee。系统服务，ptrace支持下面的功能：</p>
+<ul>
+<li>
+<p>依附和不依附一个进程。被跟踪的进程被依附时，会收到一个SIGTRAP或者SIGSTOP信号。</p>
+</li>
+<li>
+<p>读写debugee的地址空间含文本和数据段的内存内容。</p>
+</li>
+<li>
+<p>查询和修改debugee的进程用户区域。比如，寄存器和其他信息。</p>
+</li>
+<li>
+<p>查询和修改debugee的信号信息和设置如等待信号和忽略信号等等。</p>
+</li>
+<li>
+<p>设置时间触发器。比如，当系统API fork、clone、exec等等被调用的时候或者debugee进程退出的时候停止debugee。</p>
+</li>
+<li>
+<p>控制debugee的运行。比如，让它从一个停止的状态继续运行。debugee可以在下一个系统调用停止或者单步进入下一个指令。</p>
+</li>
+<li>
+<p>发送各种信号如SIGKIL信号到debugee来结束进程。</p>
+</li>
+</ul>
+<p>这些内核服务提供了实现各种调试器特性的基础。稍后我们将以断点为例子。<code>ptrace</code>的原型声明在头文件<code>sys/ptrace.h</code>里。它有四个参数。第一个参数是一个类型为<code>__ptrace_request</code>指定内核支持的服务，支持的服务在文件被清楚的说明。第二个参数是debugee的进程id。第三个参数是debugee地址空间里将被读写的内存地址。最后一个参数是将被读写的字的缓冲。</p>
+<pre><code>/* Type of the REQUEST argument to `ptrace.'  */
+enum __ptrace_request
+{
+  /* Indicate that the process making this request should be traced. */
+  PTRACE_TRACEME = 0,
+
+  /* Return the word in the process's text space at address addr.  */
+  PTRACE_PEEKTEXT = 1,
+
+  /* Return the word in the process's data space at address addr.  */
+  PTRACE_PEEKDATA = 2,
+
+  /* Return the word in the process's user area at offset addr.  */
+  PTRACE_PEEKUSER = 3,
+
+  /* Write the word data into the process's text space at address addr. */
+  PTRACE_POKETEXT = 4,
+
+  /* Write the word data into the process's data space at address addr. */
+  PTRACE_POKEDATA = 5,
+
+  /* Write the word data into the process's user area at offset addr.  */
+  PTRACE_POKEUSER = 6,
+
+  /* Continue the process.  */
+  PTRACE_CONT = 7,
+
+  /* Kill the process.  */
+  PTRACE_KILL = 8,
+
+  /* Single step the process.  */
+  PTRACE_SINGLESTEP = 9,
+
+  /* Get all general purpose registers used by a processes.  */
+   PTRACE_GETREGS = 12,
+
+  /* Set all general purpose registers used by a processes. */
+   PTRACE_SETREGS = 13,
+
+  ...
+
+  /* Set ptrace filter options.  */
+  PTRACE_SETOPTIONS = 0x4200,
+
+  /* Get last ptrace message.  */
+  PTRACE_GETEVENTMSG = 0x4201,
+};
+
+/* Perform process tracing functions.  REQUEST is one of the values
+   above, and determines the action to be taken.  */
+long ptrace (enum __ptrace_request request, pid_t pid, void *addr, void *data);
+
+</code></pre>
+<p>作为一个例子，下面的<code>strace</code>命令打印调试器gdb调用的所有<code>ptrace</code>调用。这个调试器进程有一个简单的调试会话。程序<code>a.out</code>做什么不重要。我们只对调试器的操作感兴趣。这里gdb在测试程序的入口函数main设置了一个断点，接着运行这个程序。等程序完成以后，gdb也退出了这个会话。系统调用跟踪程序打印了许多<code>ptrace</code>调用。这个列出的摘取简单地强调了gdb底层的实现。</p>
+<pre><code>$ strace –o/home/myan/ptrace.log –eptrace gdb a.out
+
+ (gdb) break main
+Breakpoint 1 at 0x400590: file foo.cpp, line 12.
+(gdb) run
+Starting program: /home/myan/a.out
+
+Breakpoint 1, main () at foo.cpp:12
+12              int* ip = new int;
+(gdb) cont
+Continuing.
+
+Program exited normally.
+(gdb) quit
+
+$ cat /home/myan/ptrace.log
+ptrace(PTRACE_GETREGS, 28361, 0, 0x7fbfffe650) = 0
+ptrace(PTRACE_PEEKUSER, 28361, offsetof(struct user, u_debugreg) + 48, [0]) = 0
+ptrace(PTRACE_CONT, 28361, 0x1, SIG_0)  = 0
+--- SIGCHLD (Child exited) @ 0 (0) ---
+ptrace(PTRACE_GETREGS, 28361, 0, 0x7fbfffe650) = 0
+ptrace(PTRACE_PEEKUSER, 28361, offsetof(struct user, u_debugreg) + 48, [0]) = 0
+ptrace(PTRACE_SETOPTIONS, 28361, 0, 0x2) = 0
+ptrace(PTRACE_SETOPTIONS, 28366, 0, 0x2) = 0
+ptrace(PTRACE_SETOPTIONS, 28366, 0, 0x22) = 0
+ptrace(PTRACE_CONT, 28366, 0, SIG_0)    = 0
+--- SIGCHLD (Child exited) @ 0 (0) ---
+ptrace(PTRACE_GETEVENTMSG, 28366, 0, 0x7fbfffeb90) = 0
+ptrace(PTRACE_SETOPTIONS, 28361, 0, 0x3e) = 0
+ptrace(PTRACE_PEEKTEXT, 28361, 0x5007e0, [0x1]) = 0
+ptrace(PTRACE_PEEKTEXT, 28361, 0x5007e8, [0x1]) = 0
+...
+==&gt;ptrace(PTRACE_PEEKTEXT, 28361, 0x400590, [0xff06e800000004bf]) = 0
+==&gt;ptrace(PTRACE_POKEDATA, 28361, 0x400590, 0xff06e800000004cc) = 0
+ptrace(PTRACE_PEEKTEXT, 28361, 0x36a550b830, [0x909090909090c3f3]) = 0
+ptrace(PTRACE_PEEKTEXT, 28361, 0x36a550b830, [0x909090909090c3f3]) = 0
+ptrace(PTRACE_POKEDATA, 28361, 0x36a550b830, 0x909090909090c3cc) = 0
+ptrace(PTRACE_CONT, 28361, 0x1, SIG_0)  = 0
+--- SIGCHLD (Child exited) @ 0 (0) ---
+ptrace(PTRACE_GETREGS, 28361, 0, 0x7fbfffe750) = 0
+ptrace(PTRACE_GETREGS, 28361, 0, 0x7fbfffe790) = 0
+ptrace(PTRACE_SETREGS, 28361, 0, 0x7fbfffe790) = 0
+ptrace(PTRACE_PEEKUSER, 28361, offsetof(struct user, u_debugreg) + 48, [0]) = 0
+==&gt;ptrace(PTRACE_PEEKTEXT, 28361, 0x400590, [0xff06e800000004cc]) = 0
+==&gt;ptrace(PTRACE_POKEDATA, 28361, 0x400590, 0xff06e800000004bf) = 0
+ptrace(PTRACE_PEEKTEXT, 28361, 0x36a550b830, [0x909090909090c3cc]) = 0
+ptrace(PTRACE_POKEDATA, 28361, 0x36a550b830, 0x909090909090c3f3) = 0
+ptrace(PTRACE_PEEKTEXT, 28361, 0x5007e0, [0x1]) = 0
+...
+ptrace(PTRACE_PEEKTEXT, 28361, 0x400588, [0x10ec8348e5894855]) = 0
+==&gt;ptrace(PTRACE_SINGLESTEP, 28361, 0x1, SIG_0) = 0
+--- SIGCHLD (Child exited) @ 0 (0) ---
+ptrace(PTRACE_GETREGS, 28361, 0, 0x7fbfffe750) = 0
+ptrace(PTRACE_PEEKUSER, 28361, offsetof(struct user, u_debugreg) + 48, [0xffff4ff0]) = 0
+==&gt;ptrace(PTRACE_PEEKTEXT, 28361, 0x400590, [0xff06e800000004bf]) = 0
+==&gt;ptrace(PTRACE_POKEDATA, 28361, 0x400590, 0xff06e800000004cc) = 0
+ptrace(PTRACE_PEEKTEXT, 28361, 0x36a550b830, [0x909090909090c3f3]) = 0
+ptrace(PTRACE_PEEKTEXT, 28361, 0x36a550b830, [0x909090909090c3f3]) = 0
+ptrace(PTRACE_POKEDATA, 28361, 0x36a550b830, 0x909090909090c3cc) = 0
+ptrace(PTRACE_CONT, 28361, 0x1, SIG_0)  = 0
+
+</code></pre>
+<p>如上显示，gdb通过<code>PTRACE_GETREGS</code>和<code>PTRACE_SETREGS</code>请求来查询和修改debugee的上下文，通过<code>PTRACE_PEEKTEXT</code>和<code>PTRACE_POKETEXT</code>请求来读取和写入debugee的内存，以及其他更多的操作。当有事件发生时内核通过SIGCHLD信号来停止debugger。(??)</p>
+<p>让我们来更近一点的查看断点是怎么实现的。从gdb的控制台，我们知道断点设在了函数<code>main</code>的地址<code>0x400590</code>。调试器首先读入地址<code>0x400590</code>的代码，即<code>{0xbf 0x04 0x00 0x00 0x00 0xe8 0x06 0xff}</code>，注意x86_64架构是小端。接着gdb通过<code>PTRACE_POKEDATA</code>请求来修改代码。对比读入的数据<code>0xff06e800000004bf</code>，写入的值<code>0xff06e800000004cc</code>仅仅改变了第一个字节，从<code>0xbf</code>改成<code>0xcc</code>。<code>0xcc</code>是陷入指令（特殊的中断指令）。这个操作在debugee的代码段设置了断点。之后gdb通过<code>PTRACE_CONT</code>来继续运行debugee。当程序在执行在地址<code>0x400590</code>的指令<code>0xcc</code>是，会碰到断点，它会被内核陷入和停止。内核在检查它的状态比特以后，会意识到它被跟踪了。因此它会发送信号到调试器。gdb在它的用户接口显示这个信息并等待用户涮涮下一跳命令来执行。在这个例子中，我们决定继续运行程序。为了虔诚地按照debugee的程序逻辑，gdb恢复在地址0x400590原来的指令<code>0xbf</code>和通过<code>PTRACE_SINGLESTEP</code>请求内核执行一个指令。在单独进入执行以后，调试器会再次插入陷入指令<code>0xcc</code>，为的是在将来能够触发断点除非这是一个一次性的断点。它通过<code>PTRACE_CONT</code>请求继续程序的运行。</p>
+<p>从最高的维度看，调试器跑着一个循环，等待着debugee发生的事件或者是用户中断。当debugee碰到一件事件和停止下来后，内核通过发送一个信号来告知调试器。调试器接着查询和检查事件。取决于它的本性，它会采取适当的措施。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../chapter_1/01-04inconsistent_data_type.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../chapter_1/01-06tips_and_caveats.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../chapter_1/01-04inconsistent_data_type.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../chapter_1/01-06tips_and_caveats.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
